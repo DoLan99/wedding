@@ -5932,16 +5932,15 @@ html {
 .pageview {
     max-width: 100% !important;
     width: 100% !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     padding: 0 !important;
     overflow-x: hidden;
     position: relative;
     left: 0 !important;
     right: 0 !important;
     transform: none !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: block;
+    text-align: center;
 }
 
 /* Ensure all sections are centered and not offset */
@@ -5950,6 +5949,7 @@ html {
     margin-right: auto !important;
     left: auto !important;
     right: auto !important;
+    position: relative;
 }
 
 [id^="w-"] {
@@ -5962,6 +5962,7 @@ html {
     margin-right: auto !important;
     left: auto !important;
     right: auto !important;
+    position: relative;
 }
 
 /* Đảm bảo các element absolute trong section được tính đúng */
@@ -5969,13 +5970,20 @@ html {
     position: absolute;
 }
 
+/* Đảm bảo tất cả các section con được căn giữa */
+.pageview .com-section {
+    display: block;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
 #w-2a7akf5o {
     top: 0px;
-    left: 0 !important;
-    right: 0 !important;
+    left: auto !important;
+    right: auto !important;
     position: relative;
-    width: 100% !important;
-    max-width: 420px;
+    width: 420px !important;
+    max-width: 100%;
     margin: 0 auto !important;
     padding: 0 !important;
     height: auto;
@@ -5987,11 +5995,12 @@ html {
 /* Scale all sections for screens smaller than 420px */
 @media screen and (max-width: 419px) {
     #w-2a7akf5o {
-        width: 100% !important;
-        max-width: 100% !important;
-        left: 0 !important;
-        right: 0 !important;
-        transform: none !important;
+        width: 420px !important;
+        max-width: 100%;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) scale(calc(100vw / 420));
+        transform-origin: top center;
     }
 }
 
