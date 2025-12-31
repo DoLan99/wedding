@@ -1325,6 +1325,11 @@ img[src=""] {
 
 #w-2a7akf5o .section-wrapper {
     opacity: 1;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    left: 0 !important;
+    right: 0 !important;
 }
 
 #w-2a7akf5o {
@@ -1334,6 +1339,15 @@ img[src=""] {
 #w-2a7akf5o .section-background {
     background: center center/ cover no-repeat content-box border-box url("./image/banner.png");
     --type: 0;
+}
+
+#w-2a7akf5o .section-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 0 !important;
 }
 
 #w-slw39qp0 {
@@ -5667,25 +5681,38 @@ html, body {
 
 body {
     text-align: center;
+    display: block;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+* {
+    max-width: 100%;
 }
 
 .section-container {
-    max-width: 100%;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    position: relative;
+    left: 0 !important;
+    right: 0 !important;
 }
 
 .section-wrapper {
-    margin: 0 auto;
-    max-width: 100%;
-    width: 100%;
-    padding: 0;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    position: relative;
+    left: 0 !important;
+    right: 0 !important;
 }
 
 .pageview {
-    max-width: 100%;
-    width: 100%;
+    max-width: 100% !important;
+    width: 100% !important;
     margin: 0 auto !important;
     padding: 0 !important;
     overflow-x: hidden;
@@ -5697,8 +5724,10 @@ body {
 
 /* Ensure all sections are centered and not offset */
 .pageview > * {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    left: 0 !important;
+    right: 0 !important;
 }
 
 [id^="w-"] {
@@ -5707,15 +5736,31 @@ body {
 
 #w-2a7akf5o {
     top: 0px;
-    left: 0;
-    right: 0;
+    left: 0 !important;
+    right: 0 !important;
     position: relative;
-    width: 100%;
+    width: 100% !important;
     max-width: 420px;
-    margin: 0 auto;
-    padding: 0;
+    margin: 0 auto !important;
+    padding: 0 !important;
     height: auto;
     min-height: 810px;
+}
+
+#w-2a7akf5o .section-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    left: 0 !important;
+    right: 0 !important;
+}
+
+#w-2a7akf5o .section-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    left: 0 !important;
+    right: 0 !important;
 }
 
 #w-2a7akf5o .section-wrapper {
