@@ -1298,217 +1298,6 @@ img[src=""] {
     font-weight: 600;
     cursor: pointer
 }
-
-/* Popup Gửi Mừng Cưới */
-.popup-wedding-gift-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.popup-wedding-gift-wrapper.d-none {
-    display: none;
-}
-
-.backdrop-wedding-gift {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 10001;
-}
-
-.popup-wedding-gift-content {
-    position: relative;
-    z-index: 10002;
-    background: #fff;
-    border-radius: 15px;
-    max-width: 90%;
-    width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    animation: popupFadeIn 0.3s ease-out;
-}
-
-@keyframes popupFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9) translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-.popup-wedding-gift-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 25px;
-    border-bottom: 2px solid #f0f0f0;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-}
-
-.popup-wedding-gift-header h3 {
-    margin: 0;
-    color: #fff;
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.popup-close-btn {
-    background: rgba(255, 255, 255, 0.3);
-    border: none;
-    color: #fff;
-    font-size: 28px;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
-    line-height: 1;
-    padding: 0;
-}
-
-.popup-close-btn:hover {
-    background: rgba(255, 255, 255, 0.5);
-    transform: rotate(90deg);
-}
-
-.popup-wedding-gift-body {
-    padding: 25px;
-}
-
-.account-section {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.account-item {
-    flex: 1;
-    min-width: 250px;
-    text-align: center;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 12px;
-    border: 2px solid #e8e8e8;
-    transition: all 0.3s;
-}
-
-.account-item:hover {
-    border-color: #ff6b6b;
-    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
-}
-
-.account-item h4 {
-    margin: 0 0 15px 0;
-    color: #ff6b6b;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.qr-code-container {
-    margin: 15px 0;
-    display: flex;
-    justify-content: center;
-}
-
-.qr-code-img {
-    width: 180px;
-    height: 180px;
-    border: 3px solid #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background: #fff;
-    object-fit: contain;
-}
-
-.account-info {
-    margin-top: 20px;
-    text-align: left;
-}
-
-.account-info p {
-    margin: 10px 0;
-    color: #333;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.account-info strong {
-    color: #555;
-    min-width: 120px;
-    display: inline-block;
-}
-
-.copy-btn {
-    width: 100%;
-    margin-top: 15px;
-    padding: 10px 15px;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.copy-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-}
-
-.copy-btn:active {
-    transform: translateY(0);
-}
-
-.copy-btn.copied {
-    background: #4caf50;
-}
-
-/* Responsive */
-@media screen and (max-width: 767px) {
-    .popup-wedding-gift-content {
-        width: 95%;
-        max-width: 95%;
-    }
-    
-    .account-section {
-        flex-direction: column;
-    }
-    
-    .account-item {
-        min-width: 100%;
-    }
-    
-    .qr-code-img {
-        width: 150px;
-        height: 150px;
-    }
-    
-    .popup-wedding-gift-header h3 {
-        font-size: 18px;
-    }
-}
 </style>
 <style type="text/css" media="screen and (min-width: 768px)">
 .section-container {
@@ -6404,6 +6193,27 @@ body {
     --type: 0;
 }
 
+#w-9jbxfocn {
+    top: 545px;
+    left: 12.499984741210938px;
+    width: 396px;
+    height: 30px;
+}
+
+#w-9jbxfocn .text-block {
+    background: ;
+}
+
+#w-9jbxfocn .text-block-css {
+    border-color: rgba(229, 231, 235, 1);
+    border-style: solid;
+    color: rgba(193, 0, 0, 1);
+    font-family: 'Barlow', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    --type: 0;
+}
 
 #w-k9ip5664 {
     top: 1183.5px;
@@ -6786,9 +6596,97 @@ body {
     transform: rotate(90deg) perspective(1000px);
 }
 
+#w-xbeeuoiu {
+    top: 2975px;
+    left: 159px;
+    width: 258px;
+    height: 108px;
+}
 
+#w-xbeeuoiu .text-block {
+    background: ;
+}
 
+#w-xbeeuoiu .text-block-css {
+    border-color: rgba(229, 231, 235, 1);
+    border-style: solid;
+    color: rgba(0, 0, 0, 1);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 1.8;
+    text-align: end;
+    --type: 0;
+}
 
+#w-d9aw5cdh {
+    top: 3083px;
+    left: 9px;
+    width: 251px;
+    height: 108px;
+}
+
+#w-d9aw5cdh .text-block {
+    background: ;
+}
+
+#w-d9aw5cdh .text-block-css {
+    border-color: rgba(229, 231, 235, 1);
+    border-style: solid;
+    color: rgba(0, 0, 0, 1);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 1.8;
+    text-align: start;
+    --type: 0;
+}
+
+#w-6siofah9 {
+    top: 2091px;
+    left: 8.849998474121094px;
+    width: 218px;
+    height: 81px;
+}
+
+#w-6siofah9 .text-block {
+    background: ;
+}
+
+#w-6siofah9 .text-block-css {
+    border-color: rgba(229, 231, 235, 1);
+    border-style: solid;
+    color: rgba(0, 0, 0, 1);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 1.8;
+    text-align: start;
+    --type: 0;
+}
+
+#w-es0n29xp {
+    top: 2091px;
+    left: 226.8499984741211px;
+    width: 186px;
+    height: 81px;
+}
+
+#w-es0n29xp .text-block {
+    background: ;
+}
+
+#w-es0n29xp .text-block-css {
+    border-color: rgba(229, 231, 235, 1);
+    border-style: solid;
+    color: rgba(0, 0, 0, 1);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 1.8;
+    text-align: end;
+    --type: 0;
+}
 
 #w-h5b50toi {
     top: 11px;
@@ -9074,6 +8972,20 @@ body {
     -webkit-animation-duration: 4s;
 }
 
+#w-9jbxfocn.animation {
+    transform: perspective(1000px);
+}
+
+#w-9jbxfocn.animation .text-block-css {
+    animation-name: slideInUp;
+    -webkit-animation-name: slideInUp;
+    animation-delay: 0s;
+    -webkit-animation-delay: 0s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+    animation-duration: 4s;
+    -webkit-animation-duration: 4s;
+}
 
 #w-k9ip5664.animation {
     transform: perspective(1000px);
@@ -9285,9 +9197,65 @@ body {
     -webkit-animation-duration: 1s;
 }
 
+#w-xbeeuoiu.animation {
+    transform: perspective(1000px);
+}
 
+#w-xbeeuoiu.animation .text-block-css {
+    animation-name: slideInRight;
+    -webkit-animation-name: slideInRight;
+    animation-delay: 0s;
+    -webkit-animation-delay: 0s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+    animation-duration: 4s;
+    -webkit-animation-duration: 4s;
+}
 
+#w-d9aw5cdh.animation {
+    transform: perspective(1000px);
+}
 
+#w-d9aw5cdh.animation .text-block-css {
+    animation-name: slideInLeft;
+    -webkit-animation-name: slideInLeft;
+    animation-delay: 0s;
+    -webkit-animation-delay: 0s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+    animation-duration: 4s;
+    -webkit-animation-duration: 4s;
+}
+
+#w-6siofah9.animation {
+    transform: perspective(1000px);
+}
+
+#w-6siofah9.animation .text-block-css {
+    animation-name: slideInLeft;
+    -webkit-animation-name: slideInLeft;
+    animation-delay: 0s;
+    -webkit-animation-delay: 0s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+    animation-duration: 4s;
+    -webkit-animation-duration: 4s;
+}
+
+#w-es0n29xp.animation {
+    transform: perspective(1000px);
+}
+
+#w-es0n29xp.animation .text-block-css {
+    animation-name: slideInRight;
+    -webkit-animation-name: slideInRight;
+    animation-delay: 0s;
+    -webkit-animation-delay: 0s;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+    animation-duration: 4s;
+    -webkit-animation-duration: 4s;
+}
 
 #w-h5b50toi.animation {
     transform: perspective(1000px);

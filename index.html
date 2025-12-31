@@ -757,6 +757,8 @@
                                                 aria-label="Bạn là khách mời của ai?">
                                                 <option selected="selected" disabled="" value="">Bạn là khách mời của
                                                     ai?</option>
+                                                <option value="Cô dâu">Cô dâu</option>
+                                                <option value="Chú rể">Chú rể</option>
                                             </select>
                                             <div class="chevron"><span class="icon"></span></div>
                                         </div>
@@ -842,6 +844,45 @@
     </div>
     <div id="popup-backdrop" class="popup-backdrop full-width full-height d-none"></div>
     <div id="lightbox" class="lightbox-backdrop full-width full-height d-none"></div>
+    
+    <!-- Popup Gửi Mừng Cưới -->
+    <div id="popup-wedding-gift" class="popup-wedding-gift-wrapper d-none">
+        <div class="backdrop-wedding-gift"></div>
+        <div class="popup-wedding-gift-content">
+            <div class="popup-wedding-gift-header">
+                <h3>Gửi Mừng Cưới</h3>
+                <button class="popup-close-btn" id="close-wedding-gift-popup">×</button>
+            </div>
+            <div class="popup-wedding-gift-body">
+                <div class="account-section">
+                    <div class="account-item">
+                        <h4>Cô Dâu</h4>
+                        <div class="qr-code-container">
+                            <img id="qr-bride" src="./image/qr-bride.png" alt="QR Code Cô Dâu" class="qr-code-img">
+                        </div>
+                        <div class="account-info">
+                            <p class="account-name"><strong>Tên:</strong> <span id="bride-name">Đỗ Lan</span></p>
+                            <p class="account-number"><strong>Số tài khoản:</strong> <span id="bride-account">1234567890</span></p>
+                            <p class="account-bank"><strong>Ngân hàng:</strong> <span id="bride-bank">Vietcombank</span></p>
+                            <button class="copy-btn" data-copy="bride-account">Sao chép số tài khoản</button>
+                        </div>
+                    </div>
+                    <div class="account-item">
+                        <h4>Chú Rể</h4>
+                        <div class="qr-code-container">
+                            <img id="qr-groom" src="./image/qr-groom.png" alt="QR Code Chú Rể" class="qr-code-img">
+                        </div>
+                        <div class="account-info">
+                            <p class="account-name"><strong>Tên:</strong> <span id="groom-name">Hà Thế Huynh</span></p>
+                            <p class="account-number"><strong>Số tài khoản:</strong> <span id="groom-account">0987654321</span></p>
+                            <p class="account-bank"><strong>Ngân hàng:</strong> <span id="groom-bank">Vietcombank</span></p>
+                            <button class="copy-btn" data-copy="groom-account">Sao chép số tài khoản</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="login-popup" class="login-popup-wrapper">
         <div class="backdrop-login"></div>
         <div class="popup-default-login">
@@ -1022,6 +1063,202 @@
 
             // Gọi cuộn trang ngay khi mở
             startScroll();
+        });
+
+        // Xử lý popup Gửi Mừng Cưới
+        document.addEventListener('DOMContentLoaded', function() {
+            const giftButton = document.querySelector('#w-6bxnrs2m');
+            const popup = document.getElementById('popup-wedding-gift');
+            const closeBtn = document.getElementById('close-wedding-gift-popup');
+            const backdrop = document.querySelector('.backdrop-wedding-gift');
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+            // Mở popup khi click nút "Gửi Mừng Cưới"
+            if (giftButton) {
+                giftButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (popup) {
+                        popup.classList.remove('d-none');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
+
+            // Đóng popup
+            function closePopup() {
+                if (popup) {
+                    popup.classList.add('d-none');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closePopup);
+            }
+
+            if (backdrop) {
+                backdrop.addEventListener('click', closePopup);
+            }
+
+            // Xử lý copy số tài khoản
+            copyButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const copyType = this.getAttribute('data-copy');
+                    let textToCopy = '';
+                    
+                    if (copyType === 'bride-account') {
+                        textToCopy = document.getElementById('bride-account').textContent;
+                    } else if (copyType === 'groom-account') {
+                        textToCopy = document.getElementById('groom-account').textContent;
+                    }
+
+                    if (textToCopy) {
+                        // Copy to clipboard
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(textToCopy).then(() => {
+                                showCopySuccess(this);
+                            }).catch(() => {
+                                fallbackCopy(textToCopy, this);
+                            });
+                        } else {
+                            fallbackCopy(textToCopy, this);
+                        }
+                    }
+                });
+            });
+
+            function fallbackCopy(text, button) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopySuccess(button);
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                }
+                document.body.removeChild(textArea);
+            }
+
+            function showCopySuccess(button) {
+                const originalText = button.textContent;
+                button.textContent = 'Đã sao chép!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }
+        });
+
+        // Xử lý gửi form đến Google Sheets
+        document.addEventListener('DOMContentLoaded', function() {
+            const formTitle = document.querySelector('#w-yzyqfsaj');
+            const form = document.getElementById('kle3fd6u');
+            const submitButton = document.querySelector('#w-fl11p7yd');
+            
+            // Google Apps Script Web App URL - THAY ĐỔI URL NÀY BẰNG URL CỦA BẠN
+            // Hướng dẫn: Xem file GOOGLE_SHEETS_SETUP.md để biết cách lấy URL
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_rVVHMCXS4sDk76xySZDn3w0zRPp_N7AsHCX1xwMUzaAXybTlujdpTNgKoo5z-H90nA/exec';
+            
+            // Xử lý click vào "GỬI LỜI CHÚC MỪNG"
+            if (formTitle) {
+                formTitle.style.cursor = 'pointer';
+                formTitle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    handleFormSubmit();
+                });
+            }
+
+            // Xử lý click vào nút "Gửi Lời Chúc"
+            if (submitButton) {
+                submitButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    handleFormSubmit();
+                });
+            }
+
+            // Xử lý submit form
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleFormSubmit();
+                });
+            }
+
+            function handleFormSubmit() {
+                // Lấy dữ liệu từ form
+                const formData = {
+                    full_name: document.querySelector('input[name="full_name"]')?.value || '',
+                    textarea_input_1: document.querySelector('textarea[name="textarea_input_1"]')?.value || '',
+                    select_1: document.querySelector('select[name="select_1"]')?.value || '',
+                    select_2: document.querySelector('select[name="select_2"]')?.value || '',
+                    timestamp: new Date().toLocaleString('vi-VN')
+                };
+
+                // Validate form
+                if (!formData.full_name.trim()) {
+                    alert('Vui lòng nhập họ và tên!');
+                    return;
+                }
+
+                // Hiển thị loading
+                const buttonLoader = submitButton?.querySelector('.button-loader');
+                const buttonText = submitButton?.querySelector('.button-text');
+                if (buttonLoader) buttonLoader.style.display = 'block';
+                if (buttonText) buttonText.textContent = 'Đang gửi...';
+
+                // Kiểm tra URL đã được cấu hình chưa
+                if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    alert('Vui lòng cấu hình Google Script URL trong file index.html!\nXem file GOOGLE_SHEETS_SETUP.md để biết cách thiết lập.');
+                    if (buttonLoader) buttonLoader.style.display = 'none';
+                    if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                    return;
+                }
+
+                // Gửi dữ liệu đến Google Sheets
+                // Chuyển đổi dữ liệu thành URL-encoded format để Google Apps Script có thể đọc
+                const urlEncodedData = Object.keys(formData)
+                    .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(formData[key]))
+                    .join('&');
+
+                // Gửi dữ liệu
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: urlEncodedData
+                })
+                .then(() => {
+                    // Với mode 'no-cors', chúng ta không thể đọc response
+                    // Nhưng nếu không có lỗi, coi như thành công
+                    setTimeout(() => {
+                        // Hiển thị thông báo thành công
+                        alert('Cảm ơn bạn đã gửi lời chúc mừng! Chúng mình rất vui khi nhận được tình cảm của bạn ❤️');
+                        
+                        // Reset form
+                        if (form) form.reset();
+                        
+                        // Reset button
+                        if (buttonLoader) buttonLoader.style.display = 'none';
+                        if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                    }, 500);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi gửi. Vui lòng thử lại!\nNếu lỗi vẫn tiếp tục, vui lòng kiểm tra lại Google Script URL.');
+                    
+                    // Reset button
+                    if (buttonLoader) buttonLoader.style.display = 'none';
+                    if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                });
+            }
         });
     </script>
 
