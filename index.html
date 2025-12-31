@@ -1163,7 +1163,7 @@
             
             // Google Apps Script Web App URL - THAY ĐỔI URL NÀY BẰNG URL CỦA BẠN
             // Hướng dẫn: Xem file GOOGLE_SHEETS_SETUP.md để biết cách lấy URL
-            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_rVVHMCXS4sDk76xySZDn3w0zRPp_N7AsHCX1xwMUzaAXybTlujdpTNgKoo5z-H90nA/exec';
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeRM6aZ8SOioyjzKzkV3PvG4IP2ZgDUIV_28VET5WXuV3-Cvu8iKSL_B_9l8nwsWjLaA/exec';
             
             // Xử lý click vào "GỬI LỜI CHÚC MỪNG"
             if (formTitle) {
@@ -1190,7 +1190,15 @@
                 });
             }
 
+            // Flag để ngăn submit nhiều lần
+            let isSubmitting = false;
+            
             function handleFormSubmit() {
+                // Ngăn submit nhiều lần
+                if (isSubmitting) {
+                    return;
+                }
+                
                 // Lấy dữ liệu từ form
                 const formData = {
                     full_name: document.querySelector('input[name="full_name"]')?.value || '',
@@ -1203,8 +1211,12 @@
                 // Validate form
                 if (!formData.full_name.trim()) {
                     alert('Vui lòng nhập họ và tên!');
+                    isSubmitting = false; // Reset flag
                     return;
                 }
+
+                // Đánh dấu đang submit
+                isSubmitting = true;
 
                 // Hiển thị loading
                 const buttonLoader = submitButton?.querySelector('.button-loader');
@@ -1217,74 +1229,118 @@
                     alert('Vui lòng cấu hình Google Script URL trong file index.html!\nXem file GOOGLE_SHEETS_SETUP.md để biết cách thiết lập.');
                     if (buttonLoader) buttonLoader.style.display = 'none';
                     if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                    isSubmitting = false; // Reset flag
+                    return;
+                }
+                
+                // Kiểm tra URL có đúng format không
+                if (!GOOGLE_SCRIPT_URL.includes('/exec')) {
+                    alert('URL Google Script không đúng format!\nURL phải có đuôi /exec\nVí dụ: https://script.google.com/macros/s/.../exec');
+                    if (buttonLoader) buttonLoader.style.display = 'none';
+                    if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                    isSubmitting = false; // Reset flag
                     return;
                 }
 
                 // Gửi dữ liệu đến Google Sheets
-                // Sử dụng cách gửi qua form để tránh lỗi CORS và 401
-                const formDataToSend = new FormData();
-                formDataToSend.append('full_name', formData.full_name);
-                formDataToSend.append('textarea_input_1', formData.textarea_input_1);
-                formDataToSend.append('select_1', formData.select_1);
-                formDataToSend.append('select_2', formData.select_2);
-                formDataToSend.append('timestamp', formData.timestamp);
-
-                // Tạo một form ẩn để submit
-                const hiddenForm = document.createElement('form');
-                hiddenForm.method = 'POST';
-                hiddenForm.action = GOOGLE_SCRIPT_URL;
-                hiddenForm.target = 'hidden_iframe';
-                hiddenForm.style.display = 'none';
-                hiddenForm.enctype = 'application/x-www-form-urlencoded';
+                // Sử dụng GET request với query parameters để tránh lỗi 401
+                const queryParams = new URLSearchParams();
+                queryParams.append('full_name', formData.full_name);
+                queryParams.append('textarea_input_1', formData.textarea_input_1);
+                queryParams.append('select_1', formData.select_1);
+                queryParams.append('select_2', formData.select_2);
+                queryParams.append('timestamp', formData.timestamp);
                 
-                // Thêm các input ẩn
-                Object.keys(formData).forEach(key => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = key;
-                    input.value = formData[key];
-                    hiddenForm.appendChild(input);
-                });
+                const urlWithParams = GOOGLE_SCRIPT_URL + '?' + queryParams.toString();
                 
-                // Tạo iframe ẩn để nhận response
-                let iframe = document.getElementById('hidden_iframe');
-                if (!iframe) {
-                    iframe = document.createElement('iframe');
-                    iframe.id = 'hidden_iframe';
-                    iframe.name = 'hidden_iframe';
-                    iframe.style.display = 'none';
-                    iframe.style.width = '0';
-                    iframe.style.height = '0';
-                    iframe.style.border = 'none';
-                    document.body.appendChild(iframe);
+                // Xóa iframe cũ nếu có để tránh duplicate
+                let oldIframe = document.getElementById('hidden_iframe');
+                if (oldIframe) {
+                    oldIframe.onload = null;
+                    oldIframe.onerror = null;
+                    document.body.removeChild(oldIframe);
                 }
                 
-                // Xử lý sau khi submit
+                // Tạo iframe mới để load URL (GET request)
+                const iframe = document.createElement('iframe');
+                iframe.id = 'hidden_iframe';
+                iframe.name = 'hidden_iframe';
+                iframe.style.display = 'none';
+                iframe.style.width = '0';
+                iframe.style.height = '0';
+                iframe.style.border = 'none';
+                document.body.appendChild(iframe);
+                
+                // Xử lý sau khi load
+                let successShown = false;
                 iframe.onload = function() {
-                    // Hiển thị thông báo thành công
-                    alert('Cảm ơn bạn đã gửi lời chúc mừng! Chúng mình rất vui khi nhận được tình cảm của bạn ❤️');
-                    
-                    // Reset form
-                    if (form) form.reset();
-                    
-                    // Reset button
-                    if (buttonLoader) buttonLoader.style.display = 'none';
-                    if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
-                    
-                    // Xóa form ẩn
-                    if (document.body.contains(hiddenForm)) {
-                        document.body.removeChild(hiddenForm);
+                    try {
+                        // Kiểm tra nếu iframe có content (có thể là lỗi 403)
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        const iframeText = iframeDoc.body ? iframeDoc.body.innerText : '';
+                        
+                        if (iframeText.includes('Forbidden') || iframeText.includes('403') || iframeText.includes('Access denied')) {
+                            alert('Lỗi 403: Quyền truy cập bị từ chối!\n\nVui lòng:\n1. Mở Google Apps Script\n2. Deploy lại với "Who has access" = "Anyone"\n3. Authorize lại nếu được yêu cầu\n\nXem file GOOGLE_SHEETS_SETUP.md để biết chi tiết.');
+                            if (buttonLoader) buttonLoader.style.display = 'none';
+                            if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                            isSubmitting = false; // Reset flag
+                            return;
+                        }
+                        
+                        // Nếu không có lỗi, coi như thành công
+                        if (!successShown) {
+                            successShown = true;
+                            alert('Cảm ơn bạn đã gửi lời chúc mừng! Chúng mình rất vui khi nhận được tình cảm của bạn ❤️');
+                            
+                            // Reset form
+                            if (form) form.reset();
+                            
+                            // Reset button
+                            if (buttonLoader) buttonLoader.style.display = 'none';
+                            if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                            
+                            // Reset flag sau 1 giây để cho phép submit lại
+                            setTimeout(() => {
+                                isSubmitting = false;
+                            }, 1000);
+                        }
+                    } catch (e) {
+                        // Nếu không đọc được iframe (CORS), coi như đã gửi thành công
+                        if (!successShown) {
+                            successShown = true;
+                            alert('Cảm ơn bạn đã gửi lời chúc mừng! Chúng mình rất vui khi nhận được tình cảm của bạn ❤️');
+                            
+                            // Reset form
+                            if (form) form.reset();
+                            
+                            // Reset button
+                            if (buttonLoader) buttonLoader.style.display = 'none';
+                            if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                            
+                            // Reset flag sau 1 giây
+                            setTimeout(() => {
+                                isSubmitting = false;
+                            }, 1000);
+                        }
                     }
                 };
                 
-                // Thêm form vào body và submit
-                document.body.appendChild(hiddenForm);
-                hiddenForm.submit();
+                // Xử lý lỗi khi load
+                iframe.onerror = function() {
+                    alert('Có lỗi xảy ra khi gửi dữ liệu. Vui lòng kiểm tra:\n1. Google Script URL có đúng không\n2. Quyền truy cập đã được set là "Anyone" chưa\n3. Đã authorize chưa');
+                    if (buttonLoader) buttonLoader.style.display = 'none';
+                    if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
+                    isSubmitting = false; // Reset flag
+                };
+                
+                // Load URL trong iframe (GET request)
+                iframe.src = urlWithParams;
                 
                 // Timeout để xử lý trường hợp không có response (fallback)
                 setTimeout(() => {
-                    if (buttonLoader && buttonLoader.style.display !== 'none') {
+                    if (buttonLoader && buttonLoader.style.display !== 'none' && !successShown) {
                         // Hiển thị thông báo thành công (giả định đã gửi được)
+                        successShown = true;
                         alert('Cảm ơn bạn đã gửi lời chúc mừng! Chúng mình rất vui khi nhận được tình cảm của bạn ❤️');
                         
                         // Reset form
@@ -1294,10 +1350,8 @@
                         if (buttonLoader) buttonLoader.style.display = 'none';
                         if (buttonText) buttonText.textContent = 'Gửi Lời Chúc';
                         
-                        // Xóa form ẩn nếu còn
-                        if (document.body.contains(hiddenForm)) {
-                            document.body.removeChild(hiddenForm);
-                        }
+                        // Reset flag
+                        isSubmitting = false;
                     }
                 }, 3000);
             }

@@ -18,40 +18,27 @@
 2. Xóa code mặc định và dán code sau:
 
 ```javascript
-function doPost(e) {
+function doGet(e) {
   try {
-    // Lấy dữ liệu từ form submission
-    const data = {};
-    
-    // Xử lý dữ liệu từ form
-    if (e.parameter) {
-      // Dữ liệu từ form submit
-      data.full_name = e.parameter.full_name || '';
-      data.textarea_input_1 = e.parameter.textarea_input_1 || '';
-      data.select_1 = e.parameter.select_1 || '';
-      data.select_2 = e.parameter.select_2 || '';
-      data.timestamp = e.parameter.timestamp || new Date();
-    } else if (e.postData && e.postData.contents) {
-      // Xử lý URL-encoded data
-      const params = e.postData.contents.split('&');
-      params.forEach(param => {
-        const [key, value] = param.split('=');
-        if (key && value) {
-          data[decodeURIComponent(key)] = decodeURIComponent(value);
-        }
-      });
-    }
+    // Lấy dữ liệu từ query parameters (GET request)
+    const data = {
+      full_name: e.parameter.full_name || '',
+      textarea_input_1: e.parameter.textarea_input_1 || '',
+      select_1: e.parameter.select_1 || '',
+      select_2: e.parameter.select_2 || '',
+      timestamp: e.parameter.timestamp || new Date().toLocaleString('vi-VN')
+    };
     
     // Lấy Sheet hiện tại
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     
     // Thêm dữ liệu vào Sheet
     sheet.appendRow([
-      data.full_name || '',
-      data.textarea_input_1 || '',
-      data.select_1 || '',
-      data.select_2 || '',
-      data.timestamp || new Date()
+      data.full_name,
+      data.textarea_input_1,
+      data.select_1,
+      data.select_2,
+      data.timestamp
     ]);
     
     // Trả về HTML response để iframe có thể load
@@ -60,12 +47,11 @@ function doPost(e) {
       <html>
         <head>
           <title>Success</title>
+          <meta charset="UTF-8">
         </head>
-        <body>
-          <script>
-            window.parent.postMessage('success', '*');
-          </script>
-          <p>Data saved successfully!</p>
+        <body style="font-family: Arial; padding: 20px; text-align: center;">
+          <h2 style="color: #4CAF50;">✓ Đã gửi thành công!</h2>
+          <p>Cảm ơn bạn đã gửi lời chúc mừng!</p>
         </body>
       </html>
     `);
@@ -77,11 +63,10 @@ function doPost(e) {
       <html>
         <head>
           <title>Error</title>
+          <meta charset="UTF-8">
         </head>
-        <body>
-          <script>
-            window.parent.postMessage('error', '*');
-          </script>
+        <body style="font-family: Arial; padding: 20px; text-align: center;">
+          <h2 style="color: #f44336;">✗ Có lỗi xảy ra</h2>
           <p>Error: ${error.toString()}</p>
         </body>
       </html>
@@ -89,8 +74,9 @@ function doPost(e) {
   }
 }
 
-function doGet(e) {
-  return ContentService.createTextOutput('Form submission endpoint is ready!');
+function doPost(e) {
+  // Xử lý POST request nếu cần
+  return doGet(e);
 }
 ```
 
@@ -114,9 +100,33 @@ function doGet(e) {
 6. **QUAN TRỌNG**: Sau khi authorize xong, copy **Web App URL** (sẽ có dạng: `https://script.google.com/macros/s/...`)
    - URL này sẽ hiển thị trong dialog sau khi deploy thành công
 
-**Lưu ý**: 
-- Nếu bạn đã có deployment cũ và không thấy "Authorize access", có thể bạn đã authorize rồi
-- Nếu vẫn lỗi 401, hãy tạo deployment mới: Click **"Manage deployments"** → Click icon bút chì (edit) → Click **"New version"** → Deploy lại
+**QUAN TRỌNG - Fix lỗi 403 Forbidden:**
+
+Nếu bạn gặp lỗi 403, làm theo các bước sau:
+
+1. **Kiểm tra quyền truy cập:**
+   - Trong dialog "Quản lý các tùy chọn triển khai"
+   - Đảm bảo "Người có quyền truy cập" (Who has access) = **"Bất cứ ai"** (Anyone)
+   - KHÔNG chọn "Bất cứ ai có Tài khoản Google"
+
+2. **Authorize lại:**
+   - Click vào icon bút chì (edit) bên cạnh deployment
+   - Click **"New version"**
+   - Đảm bảo "Who has access" = **"Anyone"**
+   - Click **"Deploy"**
+   - Lần này sẽ có popup yêu cầu authorize → Click **"Authorize access"**
+   - Chọn tài khoản → Click **"Advanced"** → **"Go to [Project Name] (unsafe)"**
+   - Click **"Allow"**
+
+3. **Kiểm tra URL:**
+   - Đảm bảo URL có đuôi `/exec` (không phải `/dev`)
+   - URL đúng: `https://script.google.com/macros/s/.../exec`
+   - URL sai: `https://script.google.com/macros/s/.../dev`
+
+4. **Nếu vẫn lỗi 403:**
+   - Xóa deployment cũ
+   - Tạo deployment mới hoàn toàn
+   - Đảm bảo chọn "Anyone" ngay từ đầu
 
 ## Bước 4: Cập nhật URL trong HTML
 
