@@ -20,9 +20,19 @@
 ```javascript
 function doPost(e) {
   try {
-    // Lấy dữ liệu từ request (URL-encoded format)
+    // Lấy dữ liệu từ form submission
     const data = {};
-    if (e.postData && e.postData.contents) {
+    
+    // Xử lý dữ liệu từ form
+    if (e.parameter) {
+      // Dữ liệu từ form submit
+      data.full_name = e.parameter.full_name || '';
+      data.textarea_input_1 = e.parameter.textarea_input_1 || '';
+      data.select_1 = e.parameter.select_1 || '';
+      data.select_2 = e.parameter.select_2 || '';
+      data.timestamp = e.parameter.timestamp || new Date();
+    } else if (e.postData && e.postData.contents) {
+      // Xử lý URL-encoded data
       const params = e.postData.contents.split('&');
       params.forEach(param => {
         const [key, value] = param.split('=');
@@ -44,18 +54,38 @@ function doPost(e) {
       data.timestamp || new Date()
     ]);
     
-    // Trả về response thành công
-    return ContentService.createTextOutput(JSON.stringify({
-      'status': 'success',
-      'message': 'Data saved successfully'
-    })).setMimeType(ContentService.MimeType.JSON);
+    // Trả về HTML response để iframe có thể load
+    return HtmlService.createHtmlOutput(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Success</title>
+        </head>
+        <body>
+          <script>
+            window.parent.postMessage('success', '*');
+          </script>
+          <p>Data saved successfully!</p>
+        </body>
+      </html>
+    `);
     
   } catch (error) {
-    // Trả về response lỗi
-    return ContentService.createTextOutput(JSON.stringify({
-      'status': 'error',
-      'message': error.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
+    // Trả về HTML response với lỗi
+    return HtmlService.createHtmlOutput(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Error</title>
+        </head>
+        <body>
+          <script>
+            window.parent.postMessage('error', '*');
+          </script>
+          <p>Error: ${error.toString()}</p>
+        </body>
+      </html>
+    `);
   }
 }
 
@@ -69,15 +99,24 @@ function doGet(e) {
 
 ## Bước 3: Deploy Web App
 
-1. Click vào **Deploy** → **New deployment**
+1. Click vào **Deploy** → **New deployment** (hoặc **Manage deployments** nếu đã có deployment cũ)
 2. Click vào biểu tượng bánh răng ⚙️ bên cạnh "Select type" → chọn **Web app**
 3. Điền thông tin:
    - **Description**: "Wedding Form Handler"
-   - **Execute as**: "Me"
-   - **Who has access**: "Anyone" (hoặc "Anyone with Google account" nếu muốn bảo mật hơn)
-4. Click **Deploy**
-5. **QUAN TRỌNG**: Copy **Web App URL** (sẽ có dạng: `https://script.google.com/macros/s/...`)
-6. Click **Authorize access** và cho phép quyền truy cập
+   - **Execute as**: "Me" (Tôi - tài khoản của bạn)
+   - **Who has access**: Chọn **"Anyone"** (Bất cứ ai) - QUAN TRỌNG: Phải chọn "Anyone" để tránh lỗi 401
+4. Click **Deploy** (Triển khai)
+5. **LẦN ĐẦU TIÊN**: Sau khi click Deploy, sẽ có popup yêu cầu **"Authorize access"** (Ủy quyền truy cập):
+   - Click vào **"Authorize access"**
+   - Chọn tài khoản Google của bạn
+   - Click **"Advanced"** → **"Go to [Project Name] (unsafe)"** (nếu có cảnh báo)
+   - Click **"Allow"** để cho phép quyền truy cập
+6. **QUAN TRỌNG**: Sau khi authorize xong, copy **Web App URL** (sẽ có dạng: `https://script.google.com/macros/s/...`)
+   - URL này sẽ hiển thị trong dialog sau khi deploy thành công
+
+**Lưu ý**: 
+- Nếu bạn đã có deployment cũ và không thấy "Authorize access", có thể bạn đã authorize rồi
+- Nếu vẫn lỗi 401, hãy tạo deployment mới: Click **"Manage deployments"** → Click icon bút chì (edit) → Click **"New version"** → Deploy lại
 
 ## Bước 4: Cập nhật URL trong HTML
 
