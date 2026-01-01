@@ -1,16 +1,41 @@
 function doGet(e) {
   try {
+    // Log tất cả parameters nhận được để debug
+    Logger.log('Received parameters: ' + JSON.stringify(e.parameter));
+    
     // Lấy dữ liệu từ query parameters (GET request)
+    // Hỗ trợ cả tên field mới và cũ
     const data = {
       full_name: e.parameter.full_name || '',
-      textarea_input_1: e.parameter.textarea_input_1 || '',
-      select_1: e.parameter.select_1 || '',
-      select_2: e.parameter.select_2 || '',
-      timestamp: e.parameter.timestamp || new Date().toLocaleString('vi-VN')
+      // Hỗ trợ cả textarea_input_1 và loichuc
+      textarea_input_1: e.parameter.textarea_input_1 || e.parameter.loichuc || '',
+      // Hỗ trợ cả select_1 và select
+      select_1: e.parameter.select_1 || e.parameter.select || '',
+      // Hỗ trợ cả select_2 và moiquanhe
+      select_2: e.parameter.select_2 || e.parameter.moiquanhe || '',
+      timestamp: e.parameter.timestamp || new Date().toLocaleString('vi-VN', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      })
     };
     
+    Logger.log('Processed data: ' + JSON.stringify(data));
+    
     // Lấy Sheet hiện tại
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = spreadsheet.getActiveSheet();
+    
+    // Kiểm tra xem có dòng tiêu đề chưa
+    const lastRow = sheet.getLastRow();
+    if (lastRow === 0) {
+      // Thêm header nếu sheet trống
+      sheet.appendRow(['Tên', 'Lời chúc', 'Xác nhận tham dự', 'Khách mời của ai', 'Thời gian']);
+    }
     
     // Thêm dữ liệu vào Sheet
     sheet.appendRow([
@@ -20,6 +45,8 @@ function doGet(e) {
       data.select_2,
       data.timestamp
     ]);
+    
+    Logger.log('Data saved successfully to row: ' + (sheet.getLastRow()));
     
     // Trả về HTML response để iframe có thể load
     return HtmlService.createHtmlOutput(`
@@ -37,6 +64,10 @@ function doGet(e) {
     `);
     
   } catch (error) {
+    // Log lỗi chi tiết
+    Logger.log('Error: ' + error.toString());
+    Logger.log('Stack: ' + error.stack);
+    
     // Trả về HTML response với lỗi
     return HtmlService.createHtmlOutput(`
       <!DOCTYPE html>
@@ -48,6 +79,7 @@ function doGet(e) {
         <body style="font-family: Arial; padding: 20px; text-align: center;">
           <h2 style="color: #f44336;">✗ Có lỗi xảy ra</h2>
           <p>Error: ${error.toString()}</p>
+          <p>Vui lòng kiểm tra Google Apps Script Logs</p>
         </body>
       </html>
     `);
